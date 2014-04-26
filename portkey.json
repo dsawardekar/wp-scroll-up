@@ -1,0 +1,10 @@
+{
+  "lib/WpScrollUp/*.php": {
+    "type": "library",
+    "test": "test/WpScrollUp/%sTest.php"
+  },
+  "test/WpScrollUp/*Test.php": {
+    "type": "test",
+    "alternate": "lib/WpScrollUp/%s.php"
+  }
+}
