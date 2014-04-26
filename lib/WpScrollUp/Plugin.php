@@ -3,6 +3,7 @@
 namespace WpScrollUp;
 
 use Encase\Container;
+use WordPress\TwigHelper;
 
 class Plugin {
 
@@ -24,12 +25,23 @@ class Plugin {
   function __construct($file) {
     $container = new Container();
     $container->object('pluginFile', $file);
+    $container->object('pluginDir', $this->toPluginDir($file));
+    $container->singleton('twigHelper', 'WordPress\\TwigHelper');
 
     $this->container = $container;
   }
 
   function lookup($key) {
     return $this->container->lookup($key);
+  }
+
+  function enable() {
+    $twigHelper = $this->lookup('twigHelper');
+    $twigHelper->setBaseDir($this->lookup('pluginDir'));
+  }
+
+  function toPluginDir($file) {
+    return untrailingslashit(plugin_dir_path($file));
   }
 
 }

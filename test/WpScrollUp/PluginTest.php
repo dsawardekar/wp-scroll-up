@@ -41,4 +41,21 @@ class PluginTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals($this->pluginFile, $pluginFile);
   }
 
+  function test_it_contains_plugin_dir() {
+    $dir = $this->plugin->lookup('pluginDir');
+    $this->assertEquals(getcwd(), $dir);
+  }
+
+  function test_it_contains_a_twig_helper() {
+    $helper = $this->plugin->lookup('twigHelper');
+    $this->assertInstanceOf('WordPress\\TwigHelper', $helper);
+  }
+
+  function test_it_configures_twig_helper_when_enabled() {
+    $helper = $this->plugin->lookup('twigHelper');
+    $this->plugin->enable();
+
+    $this->assertEquals(getcwd(), $helper->getBaseDir());
+  }
+
 }
