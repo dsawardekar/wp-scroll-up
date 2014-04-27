@@ -3,3 +3,4 @@
 tmp
 vendor
 build
+wp-cli*.yml
