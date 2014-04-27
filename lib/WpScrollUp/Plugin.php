@@ -31,6 +31,7 @@ class Plugin {
     $container->singleton('twigHelper', 'WordPress\\TwigHelper');
     $container->singleton('optionStore', 'WpScrollUp\\OptionStore');
     $container->singleton('optionSanitizer', 'WpScrollUp\\OptionSanitizer');
+    $container->singleton('optionPage', 'WpScrollUp\\OptionPage');
 
     $this->container = $container;
   }
@@ -42,10 +43,21 @@ class Plugin {
   function enable() {
     $twigHelper = $this->lookup('twigHelper');
     $twigHelper->setBaseDir($this->lookup('pluginDir'));
+
+    add_action('admin_init', array($this, 'initOptionStore'));
+    add_action('admin_menu', array($this, 'initOptionPage'));
   }
 
   function toPluginDir($file) {
     return untrailingslashit(plugin_dir_path($file));
+  }
+
+  function initOptionStore() {
+    $this->lookup('optionStore')->register();
+  }
+
+  function initOptionPage() {
+    $this->lookup('optionPage')->register();
   }
 
 }
