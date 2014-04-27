@@ -26,7 +26,11 @@ class Plugin {
     $container = new Container();
     $container->object('pluginFile', $file);
     $container->object('pluginDir', $this->toPluginDir($file));
+    $container->object('pluginSlug', 'wp-scroll-up');
+
     $container->singleton('twigHelper', 'WordPress\\TwigHelper');
+    $container->singleton('optionStore', 'WpScrollUp\\OptionStore');
+    $container->singleton('optionSanitizer', 'WpScrollUp\\OptionSanitizer');
 
     $this->container = $container;
   }

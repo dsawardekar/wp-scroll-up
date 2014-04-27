@@ -46,6 +46,21 @@ class PluginTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(getcwd(), $dir);
   }
 
+  function test_it_contains_plugin_slug() {
+    $slug = $this->plugin->lookup('pluginSlug');
+    $this->assertEquals('wp-scroll-up', $slug);
+  }
+
+  function test_it_contains_an_option_store() {
+    $optionStore = $this->plugin->lookup('optionStore');
+    $this->assertInstanceOf('WpScrollUp\\OptionStore', $optionStore);
+  }
+
+  function test_it_contains_an_option_sanitizer() {
+    $optionSanitizer = $this->plugin->lookup('optionSanitizer');
+    $this->assertInstanceOf('WpScrollUp\\OptionSanitizer', $optionSanitizer);
+  }
+
   function test_it_contains_a_twig_helper() {
     $helper = $this->plugin->lookup('twigHelper');
     $this->assertInstanceOf('WordPress\\TwigHelper', $helper);
