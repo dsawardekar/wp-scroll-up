@@ -1,0 +1,6 @@
+{
+  "name": "wp-scroll-up",
+  "dependencies": {
+    "scrollup": "~2.3.2"
+  }
+}
