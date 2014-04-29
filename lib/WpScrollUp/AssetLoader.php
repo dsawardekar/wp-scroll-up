@@ -31,6 +31,13 @@ class AssetLoader {
     return $this;
   }
 
+  public function localize($slug, $callable) {
+    $asset = $this->find($slug);
+    $asset->localizer = $callable;
+
+    return $this;
+  }
+
   public function load() {
     if (!$this->loaded) {
       return;

@@ -57,6 +57,19 @@ class AssetLoaderTest extends \WP_UnitTestCase {
     $this->assertEquals(array('jquery', 'jquery-ui'), $script->dependencies);
   }
 
+  function test_it_can_localize_assets() {
+    $localizer = array($this, 'localize');
+    $this->loader->schedule('foo');
+    $this->loader->localize('foo', $localizer);
+    $script = $this->loader->find('foo');
+
+    $this->assertEquals($localizer, $script->localizer);
+  }
+
+  function localize($script) {
+    return array();
+  }
+
   function test_it_can_register_scripts() {
     $this->loader->schedule('foo');
     $this->loader->register();
