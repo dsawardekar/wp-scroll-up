@@ -5,7 +5,7 @@ namespace WpScrollUp;
 class OptionPage {
 
   function needs() {
-    return array('twigHelper', 'optionStore');
+    return array('twigHelper', 'optionStore', 'pluginSlug');
   }
 
   function getPageTitle() {
@@ -13,7 +13,7 @@ class OptionPage {
   }
 
   function getMenuTitle() {
-    return 'wp-scroll-up Settings';
+    return 'WP Scroll Up';
   }
 
   function getCapability() {
@@ -21,7 +21,7 @@ class OptionPage {
   }
 
   function getMenuSlug() {
-    return 'wp-scroll-up-settings';
+    return $this->pluginSlug;
   }
 
   function register() {
@@ -36,15 +36,36 @@ class OptionPage {
 
   function show() {
     $context = $this->getTemplateContext();
-    $this->twigHelper->render('options_form', $context);
+    $this->twigHelper->display('options_form', $context);
   }
 
   function getTemplateContext() {
     $context = array(
-
+      'settings_fields' => $this->getSettingsFields($this->pluginSlug),
+      'animationTypes' => array('fade', 'none'),
+      'styleTypes' => array('tab', 'pill', 'link', 'image')
     );
 
+    $options = $this->optionStore->getOptions();
+    foreach ($options as $key => $value) {
+      $context[$key] = $value;
+    }
+
     return $context;
+  }
+
+  function getSettingsFields($slug) {
+    ob_start();
+    settings_fields($slug);
+    return ob_get_clean();
+  }
+
+  function dump($key, $value) {
+    ob_start();
+    var_dump($value);
+    $dumped = ob_get_clean();
+
+    error_log("$key: $dumped");
   }
 
 }

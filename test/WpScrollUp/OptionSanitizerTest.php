@@ -16,8 +16,17 @@ class OptionSanitizerTest extends \WP_UnitTestCase {
     $this->sanitizer = $this->container->lookup('optionSanitizer');
   }
 
-  function test_it_has_container() {
-    $this->assertInstanceOf('Encase\\Container', $this->sanitizer->container);
+  function test_it_does_not_have_errors_initially() {
+    $this->assertFalse($this->sanitizer->hasErrors());
   }
 
+  /*
+* scrollDistance - 300 - number pixels
+* scrollSpeed - 300 - number ms
+* animation - fade - list
+* animationSpeed - number ms
+* scrollText - text
+* scrollImg - text - false if empty or invalid
+* style - tab, pill, link, image, custom
+   */
 }

@@ -48,7 +48,7 @@ class PluginTest extends \PHPUnit_Framework_TestCase {
 
   function test_it_contains_plugin_slug() {
     $slug = $this->plugin->lookup('pluginSlug');
-    $this->assertEquals('wp-scroll-up', $slug);
+    $this->assertEquals('wp_scroll_up', $slug);
   }
 
   function test_it_contains_an_option_store() {

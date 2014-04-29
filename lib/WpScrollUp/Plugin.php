@@ -26,7 +26,7 @@ class Plugin {
     $container = new Container();
     $container->object('pluginFile', $file);
     $container->object('pluginDir', $this->toPluginDir($file));
-    $container->object('pluginSlug', 'wp-scroll-up');
+    $container->object('pluginSlug', 'wp_scroll_up');
 
     $container->singleton('twigHelper', 'WordPress\\TwigHelper');
     $container->singleton('optionStore', 'WpScrollUp\\OptionStore');
@@ -53,11 +53,29 @@ class Plugin {
   }
 
   function initOptionStore() {
-    $this->lookup('optionStore')->register();
+    $optionStore = $this->lookup('optionStore');
+    $optionStore->setDefaults($this->getDefaultOptions());
+    $optionStore->setPluginSlug($this->lookup('pluginSlug'));
+    $optionStore->setOptionName($this->lookup('pluginSlug') .  '_options');
+    $optionStore->setSanitizer($this->lookup('optionSanitizer'));
+
+    $optionStore->register();
   }
 
   function initOptionPage() {
     $this->lookup('optionPage')->register();
+  }
+
+  function getDefaultOptions() {
+    return array(
+      'scrollDistance' => 300,
+      'scrollSpeed'    => 300,
+      'animation'      => 'fade',
+      'animationSpeed' => '100',
+      'scrollText'     => 'Scroll To Top',
+      'scrollImage'    => '',
+      'style'          => 'tab'
+    );
   }
 
 }

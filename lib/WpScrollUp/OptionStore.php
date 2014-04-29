@@ -4,26 +4,157 @@ namespace WpScrollUp;
 
 class OptionStore {
 
-  public $pluginSlug;
-  public $defaults = array(
-    'foo' => 'bar'
-  );
+  protected $pluginSlug;
+  protected $optionName;
+  protected $sanitizer;
+  protected $defaults = array();
   protected $didLoad = false;
   protected $options = null;
+  protected $didSanitize = false;
 
-  function needs() {
-    return array('pluginSlug', 'optionSanitizer');
+  public function setPluginSlug($pluginSlug) {
+    $this->pluginSlug = $pluginSlug;
   }
 
-  function getGroupName() {
-    return $this->pluginSlug . "-option-store";
+  public function getPluginSlug() {
+    return $this->pluginSlug;
   }
 
-  function getSettingName() {
-    return $this->pluginSlug . "-options";
+  public function setOptionName($optionName) {
+    $this->optionName = $optionName;
   }
 
-  function toJSON($options) {
+  public function getOptionName() {
+    return $this->optionName;
+  }
+
+  public function setDefaults($defaults) {
+    $this->defaults = $defaults;
+  }
+
+  public function getDefaults() {
+    return $this->defaults;
+  }
+
+  public function setSanitizer($sanitizer) {
+    $this->sanitizer = $sanitizer;
+  }
+
+  public function getSanitizer() {
+    return $this->sanitizer;
+  }
+
+  public function loaded() {
+    return $this->didLoad;
+  }
+
+  public function load() {
+    if ($this->didLoad) {
+      return $this->options;
+    }
+
+    $json          = get_option($this->getOptionName());
+    $this->didLoad = true;
+    $this->options = $this->parse($json);
+
+    return $this->options;
+  }
+
+  public function reload() {
+    $this->didLoad = false;
+    $this->load();
+  }
+
+  public function save() {
+    $json       = $this->toJSON($this->options);
+    update_option($this->getOptionName(), $json);
+  }
+
+  public function clear() {
+    delete_option($this->getOptionName());
+
+    $this->didLoad = false;
+    $this->options = null;
+  }
+
+  public function getOptions() {
+    $this->load();
+    return $this->options;
+  }
+
+  public function getOption($name) {
+    $this->load();
+
+    if (array_key_exists($name, $this->options)) {
+      $value = $this->options[$name];
+    } else {
+      $value = $this->defaults[$name];
+    }
+
+    return $value;
+  }
+
+  public function setOption($name, $value) {
+    $this->options[$name] = $value;
+  }
+
+  public function register() {
+    register_setting(
+      $this->getPluginSlug(),
+      $this->getOptionName(),
+      array($this, 'sanitize')
+    );
+  }
+
+  public function sanitize($options) {
+    /* prevents double sanitization */
+    if ($this->isSanitized($options)) {
+      return $options;
+    }
+
+    $target    = $this->getOptions();
+    $sanitized = $this->sanitizer->sanitize($options, $target);
+
+    if (!$this->sanitizer->hasErrors()) {
+      $json = $this->toJSON($sanitized);
+    } else {
+      $json = $this->toJSON($target);
+      $this->notifyErrors($this->sanitizer->getErrors());
+    }
+
+    $this->didSanitize = true;
+
+    return $json;
+  }
+
+  /* Helpers */
+  function isSanitized($options) {
+    return is_string($options) && $this->didSanitize;
+  }
+
+  function notifyErrors($errors) {
+    foreach ($errors as $error) {
+      add_settings_error(
+        $this->getPluginSlug(), null, $error->message, 'error'
+      );
+    }
+  }
+
+  function parse($json) {
+    if ($json !== false) {
+      $options = $this->toOptions($json);
+    } else {
+      $options = $this->defaults;
+    }
+
+    if (is_null($options)) {
+      $options = $this->defaults;
+    }
+
+    return $options;
+  }
+
+  function toJSON(&$options) {
     return json_encode($options);
   }
 
@@ -31,59 +162,4 @@ class OptionStore {
     return json_decode($json, true);
   }
 
-  function loaded() {
-    return $this->didLoad;
-  }
-
-  function load() {
-    if ($this->didLoad) {
-      return $this->options;
-    }
-
-    $options = get_option($this->getSettingName());
-    if ($options === false) {
-      $options = $this->defaults;
-    } else {
-      $options = $this->toOptions($options);
-    }
-
-    $this->options = $options;
-    $this->didLoad = true;
-
-    return $this->options;
-  }
-
-  function clear() {
-    delete_option($this->getSettingName());
-    $this->didLoad = false;
-    $this->options = null;
-  }
-
-  function getOptions() {
-    $this->load();
-    return $this->options;
-  }
-
-  function getOption($name) {
-    $this->load();
-    if (array_key_exists($name, $this->options)) {
-      return $this->options[$name];
-    } else {
-      return $this->defaults[$name];
-    }
-  }
-
-  function register() {
-    $callback = array($this, 'sanitize');
-    register_setting($this->getGroupName(), $this->getSettingName(), $callback);
-  }
-
-  function sanitize($options) {
-    $sanitized = $this->optionSanitizer->sanitize($options);
-    $json = $this->toJSON($sanitized);
-    $saveable = array();
-    $saveable[$this->getSettingName()] = $json;
-
-    return $saveable;
-  }
 }
