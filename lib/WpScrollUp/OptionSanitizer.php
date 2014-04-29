@@ -9,7 +9,7 @@ class OptionSanitizer {
 
   public function sanitize(&$options, &$target) {
     $this->errors = array();
-    $this->options = options;
+    $this->options = $options;
 
     foreach ($options as $key => $value) {
       $method = 'validate' . ucfirst($key);
