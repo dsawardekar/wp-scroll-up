@@ -4,6 +4,8 @@ namespace WpScrollUp;
 
 class AdminScriptLoader extends ScriptLoader {
 
+  protected $didAdminLoad = false;
+
   function needs() {
     return array('pluginSlug');
   }
@@ -12,8 +14,13 @@ class AdminScriptLoader extends ScriptLoader {
     return 'admin_enqueue_scripts';
   }
 
-  function start() {
-    add_action($this->startAction(), array($this, 'load'));
+  function load() {
+    if ($this->didAdminLoad === true) {
+      return parent::load();
+    } else {
+      add_action($this->startAction(), array($this, 'load'));
+      $this->didAdminLoad = true;
+    }
   }
 
   function startAction() {

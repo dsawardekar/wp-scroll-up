@@ -107,7 +107,7 @@ class Plugin {
     $loader = $this->lookup('adminScriptLoader');
     $loader->schedule('wp-scroll-up-options', $options);
     $loader->dependency('wp-scroll-up-options', array('jquery'));
-    $loader->start();
+    $loader->load();
   }
 
   function initFrontEndStyles() {
