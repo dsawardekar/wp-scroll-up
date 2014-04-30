@@ -28,7 +28,9 @@ namespace :git do
   end
 
   task :clear_after do
-    sh 'git rm lib/templates' if File.directory?('lib/templates')
+    sh 'git rm -r lib/templates' if File.directory?('lib/templates')
+    sh 'git rm .gitignore'
+    sh 'git commit -m "Cleaning up after dist"'
   end
 
   # todo: conditionally add js libs
