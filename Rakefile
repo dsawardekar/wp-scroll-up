@@ -54,9 +54,9 @@ end
 
 desc 'Create a new Distribution'
 task :dist => [
+  'composer:update',
   'git:clean',
   'git:ignore',
-  'composer:update',
   'git:vendor'
 ]
 
