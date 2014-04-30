@@ -120,13 +120,11 @@ class Plugin {
 
   function getDefaultOptions() {
     return array(
+      'style'          => 'tab',
+      'scrollText'     => 'Scroll To Top',
       'scrollDistance' => 300,
       'scrollSpeed'    => 300,
       'animation'      => 'fade',
-      'animationSpeed' => 100,
-      'scrollText'     => 'Scroll To Top',
-      'scrollImage'    => '',
-      'style'          => 'tab'
     );
   }
 
