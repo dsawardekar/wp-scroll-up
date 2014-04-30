@@ -11,6 +11,19 @@ namespace :git do
     sh 'git commit -m "Adds vendor"'
   end
 
+  task :clean do
+    sh 'git rm *.json'
+    sh 'git rm *.lock'
+    sh 'git rm *.yml'
+    sh 'git rm test'
+    sh 'git rm bin'
+    sh 'git rm phpunit.xml'
+    sh 'git rm Gemfile'
+    sh 'git rm Rakefile'
+
+    sh 'git commit -m "Removes development files"'
+  end
+
   # todo: conditionally add js libs
   task :js do
   end
@@ -38,6 +51,7 @@ end
 desc 'Create a new Distribution'
 task :dist => [
   'composer:update',
+  'git:clean',
   'git:ignore',
   'git:vendor'
 ]
