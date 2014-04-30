@@ -1,0 +1,65 @@
+<div class="wrap">
+  <h2>WP-Scroll-Up Settings</h2>
+  <form method="POST" action="options.php">
+  {{ settings_fields | raw }}
+  <table class="form-table">
+    <tbody>
+      <tr>
+        <th scope="row">
+          <label for="style">Style</label>
+        </th>
+        <td>
+          <select name="wp_scroll_up_options[style]" id="style">
+            {% for styleType in styleTypes %}
+              <option value="{{ styleType }}"
+              {{ styleType == style ? 'selected' : '' }}>{{ styleType | capitalize }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="scrollText">Scroll Text</label>
+        </th>
+        <td>
+          <input name="wp_scroll_up_options[scrollText]" id="scrollText" value="{{ scrollText }}" class="regular-text" type="text">
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="scrollDistance">Scroll Distance (pixels)</label>
+        </th>
+        <td>
+          <input name="wp_scroll_up_options[scrollDistance]" id="scrollDistance" value="{{ scrollDistance }}" class="regular-text" type="text">
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="scrollSpeed">Scroll Speed (ms)</label>
+        </th>
+        <td>
+          <input name="wp_scroll_up_options[scrollSpeed]" id="scrollSpeed" value="{{ scrollSpeed }}" class="regular-text" type="text">
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">
+          <label for="animation">Animation</label>
+        </th>
+        <td>
+          <select name="wp_scroll_up_options[animation]" id="animation">
+            {% for animationType in animationTypes %}
+              <option value="{{ animationType }}"
+              {{ animationType == animation ? 'selected' : '' }} >{{ animationType | capitalize }}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="submit">
+    <input type="hidden" id="restoreDefaults" name="wp_scroll_up_options[restoreDefaults]" value="0" />
+    <input name="submit" id="submit" class="button button-primary" value="Save Changes" type="submit">
+    <input name="reset" id="reset" class="button" value="Restore Defaults" type="submit">
+  </p>
+  </form>
+</div>

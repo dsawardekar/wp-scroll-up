@@ -1,0 +1,21 @@
+{
+  "lib/WpScrollUp/*.php": {
+    "type": "library",
+    "test": "test/WpScrollUp/%sTest.php"
+  },
+  "test/WpScrollUp/*Test.php": {
+    "type": "test",
+    "alternate": "lib/WpScrollUp/%s.php"
+  },
+
+  "js/*.js": {
+    "type": "javascript"
+  },
+  "css/*.css": {
+    "type": "css"
+  },
+  "templates/*.twig": {
+    "type": "twig",
+    "mapping": "g"
+  }
+}
