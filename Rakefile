@@ -52,16 +52,12 @@ namespace :composer do
     sh 'rm -rf vendor' if File.directory?('vendor')
     sh 'composer update'
 
-    changed = sh 'git status | grep "working directory clean"'
-    if changed != ''
+    # todo: use porcelain if this isn't good enough
+    changed = `git status`
+    if !changed.include?('working directory clean')
       sh 'git add composer.json composer.lock'
       sh 'git commit -m "Fresh composer update"'
     end
-  end
-
-  task :foo do
-    changed = sh 'git status'
-    puts "changed='#{changed}'"
   end
 end
 
