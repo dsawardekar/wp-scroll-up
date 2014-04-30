@@ -39,7 +39,7 @@ class AssetLoader {
   }
 
   public function load() {
-    if (!$this->loaded) {
+    if ($this->loaded() === true) {
       return;
     }
 

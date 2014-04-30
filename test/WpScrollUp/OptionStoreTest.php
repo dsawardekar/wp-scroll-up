@@ -29,35 +29,27 @@ class OptionStoreTest extends \WP_UnitTestCase {
     $this->container->singleton('optionStore', 'WpScrollUp\\OptionStore');
     $this->container->singleton('optionSanitizer', 'WpScrollUp\\MockSanitizer');
     $this->container->object('pluginSlug', 'wp_scroll_up');
-
-    $this->store = $this->container->lookup('optionStore');
-    $this->store->setDefaults(array(
+    $this->container->object('optionName', 'wp_scroll_up_options');
+    $this->container->object('defaultOptions', array(
       'scrollText' => 'Scroll To Top'
     ));
 
-    $this->store->setSanitizer($this->container->lookup('optionSanitizer'));
-    $this->store->setPluginSlug('wp_scroll_up');
-    $this->store->setOptionName('wp_scroll_up_options');
+    $this->store = $this->container->lookup('optionStore');
   }
 
-  function test_it_stores_option_name() {
-    $this->store->setOptionName('lorem');
+  function test_it_has_an_option_name() {
     $optionName = $this->store->getOptionName();
-    $this->assertEquals('lorem', $optionName);
+    $this->assertEquals('wp_scroll_up_options', $optionName);
   }
 
-  function test_it_stores_defaults() {
-    $defaults = array('foo' => 'bar');
-    $this->store->setDefaults($defaults);
-
-    $this->assertEquals($defaults, $this->store->getDefaults());
+  function test_it_has_option_defaults() {
+    $defaults = array('scrollText' => 'Scroll To Top');
+    $this->assertEquals($defaults, $this->store->getDefaultOptions());
   }
 
-  function test_it_stores_sanitizer() {
-    $sanitizer = new MockSanitizer();
-    $this->store->setSanitizer($sanitizer);
-    $actual = $this->store->getSanitizer();
-
+  function test_it_has_a_sanitizer() {
+    $sanitizer = $this->container->lookup('optionSanitizer');
+    $actual = $this->store->getOptionSanitizer();
     $this->assertEquals($sanitizer, $actual);
   }
 
@@ -184,7 +176,7 @@ class OptionStoreTest extends \WP_UnitTestCase {
   }
 
   function test_it_can_reload_options() {
-    $this->store->setDefaults(array('a' => 0, 'b' => 0));
+    $this->store->defaultOptions = array('a' => 0, 'b' => 0);
     $this->store->load();
 
     update_option('wp_scroll_up_options', '{"a":5,"b":6}');
@@ -196,7 +188,7 @@ class OptionStoreTest extends \WP_UnitTestCase {
 
   function test_it_can_change_and_save_options() {
     update_option('wp_scroll_up_options', '{"a":1, "b":2}');
-    $this->store->setDefaults(array('a' => 0, 'b' => 0));
+    $this->store->defaultOptions = array('a' => 0, 'b' => 0);
     $this->store->load();
 
     $this->store->setOption('a', 10);

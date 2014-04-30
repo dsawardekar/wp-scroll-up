@@ -4,44 +4,38 @@ namespace WpScrollUp;
 
 class OptionStore {
 
-  protected $pluginSlug;
-  protected $optionName;
-  protected $sanitizer;
-  protected $defaults = array();
+  public $pluginSlug;
+  public $optionName;
+  public $optionSanitizer;
+  public $defaultOptions = array();
+
   protected $didLoad = false;
   protected $options = null;
   protected $didSanitize = false;
 
-  public function setPluginSlug($pluginSlug) {
-    $this->pluginSlug = $pluginSlug;
+  public function needs() {
+    return array(
+      'pluginSlug',
+      'optionSanitizer',
+      'optionName',
+      'defaultOptions'
+    );
   }
 
   public function getPluginSlug() {
     return $this->pluginSlug;
   }
 
-  public function setOptionName($optionName) {
-    $this->optionName = $optionName;
-  }
-
   public function getOptionName() {
     return $this->optionName;
   }
 
-  public function setDefaults($defaults) {
-    $this->defaults = $defaults;
+  public function getDefaultOptions() {
+    return $this->defaultOptions;
   }
 
-  public function getDefaults() {
-    return $this->defaults;
-  }
-
-  public function setSanitizer($sanitizer) {
-    $this->sanitizer = $sanitizer;
-  }
-
-  public function getSanitizer() {
-    return $this->sanitizer;
+  public function getOptionSanitizer() {
+    return $this->optionSanitizer;
   }
 
   public function loaded() {
@@ -88,7 +82,7 @@ class OptionStore {
     if (array_key_exists($name, $this->options)) {
       $value = $this->options[$name];
     } else {
-      $value = $this->defaults[$name];
+      $value = $this->defaultOptions[$name];
     }
 
     return $value;
@@ -113,13 +107,13 @@ class OptionStore {
     }
 
     $target    = $this->getOptions();
-    $sanitized = $this->sanitizer->sanitize($options, $target);
+    $sanitized = $this->optionSanitizer->sanitize($options, $target);
 
-    if (!$this->sanitizer->hasErrors()) {
+    if (!$this->optionSanitizer->hasErrors()) {
       $json = $this->toJSON($sanitized);
     } else {
       $json = $this->toJSON($target);
-      $this->notifyErrors($this->sanitizer->getErrors());
+      $this->notifyErrors($this->optionSanitizer->getErrors());
     }
 
     $this->didSanitize = true;
@@ -144,11 +138,11 @@ class OptionStore {
     if ($json !== false) {
       $options = $this->toOptions($json);
     } else {
-      $options = $this->defaults;
+      $options = $this->defaultOptions;
     }
 
     if (is_null($options)) {
-      $options = $this->defaults;
+      $options = $this->defaultOptions;
     }
 
     return $options;

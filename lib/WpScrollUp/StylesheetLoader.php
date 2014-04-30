@@ -10,8 +10,9 @@ class StylesheetLoader extends AssetLoader {
     return 'stylesheet';
   }
 
+  /* we want to enqueue plugin styles alongside scripts */
   function enqueueAction() {
-    return 'wp_enqueue_styles';
+    return 'wp_enqueue_scripts';
   }
 
 }

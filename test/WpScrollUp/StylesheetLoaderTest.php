@@ -30,7 +30,7 @@ class StylesheetLoaderTest extends \WP_UnitTestCase {
     $this->loader->register();
     $this->loader->enqueue();
 
-    do_action('wp_enqueue_styles');
+    do_action('wp_enqueue_scripts');
 
     $this->assertTrue(wp_style_is('foo', 'enqueued'));
   }
