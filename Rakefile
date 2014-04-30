@@ -23,6 +23,8 @@ namespace :git do
     sh 'git rm phpunit.xml'
     sh 'git rm Gemfile'
     sh 'git rm Rakefile'
+    sh 'git rm -r lib/templates' if File.directory?('lib/templates')
+    sh 'git rm -r lib/tasks'     if File.directory?('lib/tasks')
 
     sh 'git commit -m "Removes development files"'
   end
