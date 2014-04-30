@@ -24,11 +24,24 @@ class Plugin {
 
   function __construct($file) {
     $container = new Container();
+
+    // plugin paths & defaults
     $container->object('pluginFile', $file);
     $container->object('pluginDir', $this->toPluginDir($file));
     $container->object('pluginSlug', 'wp_scroll_up');
+    $container->object('optionName', 'wp_scroll_up_options');
+    $container->object('defaultOptions', $this->getDefaultOptions());
 
+    // asset loader
+    $container->factory('script', 'WpScrollUp\\Script');
+    $container->factory('stylesheet', 'WpScrollUp\\Stylesheet');
+    $container->singleton('scriptLoader', 'WpScrollUp\\ScriptLoader');
+    $container->singleton('stylesheetLoader', 'WpScrollUp\\StylesheetLoader');
+
+    // twig
     $container->singleton('twigHelper', 'WordPress\\TwigHelper');
+
+    // plugin options
     $container->singleton('optionStore', 'WpScrollUp\\OptionStore');
     $container->singleton('optionSanitizer', 'WpScrollUp\\OptionSanitizer');
     $container->singleton('optionPage', 'WpScrollUp\\OptionPage');
@@ -46,6 +59,7 @@ class Plugin {
 
     add_action('admin_init', array($this, 'initOptionStore'));
     add_action('admin_menu', array($this, 'initOptionPage'));
+    add_action('init', array($this, 'initPlugin'));
   }
 
   function toPluginDir($file) {
@@ -53,17 +67,55 @@ class Plugin {
   }
 
   function initOptionStore() {
-    $optionStore = $this->lookup('optionStore');
-    $optionStore->setDefaults($this->getDefaultOptions());
-    $optionStore->setPluginSlug($this->lookup('pluginSlug'));
-    $optionStore->setOptionName($this->lookup('pluginSlug') .  '_options');
-    $optionStore->setSanitizer($this->lookup('optionSanitizer'));
-
-    $optionStore->register();
+    $this->lookup('optionStore')->register();
   }
 
   function initOptionPage() {
     $this->lookup('optionPage')->register();
+  }
+
+  function initPlugin() {
+    $this->initFrontEndScripts();
+    $this->initFrontEndStyles();
+  }
+
+  function initFrontEndScripts() {
+    $options = array(
+      'version' => Version::$version,
+      'in_footer' => true
+    );
+
+    $loader = $this->lookup('scriptLoader');
+    $loader->schedule('jquery-scroll-up', $options);
+    $loader->schedule('jquery-scroll-up-run', $options);
+
+    $loader->dependency('jquery-scroll-up', array('jquery'));
+    $loader->dependency('jquery-scroll-up-run', array('jquery', 'jquery-scroll-up'));
+
+    $loader->localize('jquery-scroll-up', array($this, 'getScrollUpOptions'));
+    $loader->load();
+  }
+
+  function initFrontEndStyles() {
+    $options = array(
+      'version' => Version::$version,
+      'media' => 'all'
+    );
+
+    $loader = $this->lookup('stylesheetLoader');
+    $loader->schedule($this->getThemeStylesheet(), $options);
+    $loader->load();
+  }
+
+  function getThemeStylesheet() {
+    $optionStore = $this->lookup('optionStore');
+    $style = $optionStore->getOption('style');
+
+    if ($style !== 'custom') {
+      return 'jquery-scroll-up-' . $style;
+    } else {
+      return 'theme-custom';
+    }
   }
 
   function getDefaultOptions() {
@@ -71,11 +123,21 @@ class Plugin {
       'scrollDistance' => 300,
       'scrollSpeed'    => 300,
       'animation'      => 'fade',
-      'animationSpeed' => '100',
+      'animationSpeed' => 100,
       'scrollText'     => 'Scroll To Top',
       'scrollImage'    => '',
       'style'          => 'tab'
     );
+  }
+
+  function getScrollUpOptions($script) {
+    $options = $this->lookup('optionStore')->getOptions();
+
+    if ($options['style'] == 'image') {
+      $options['scrollText'] = '';
+    }
+
+    return $options;
   }
 
 }

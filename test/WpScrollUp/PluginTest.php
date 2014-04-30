@@ -2,12 +2,14 @@
 
 namespace WpScrollUp;
 
-class PluginTest extends \PHPUnit_Framework_TestCase {
+class PluginTest extends \WP_UnitTestCase {
 
   public $plugin;
   public $pluginFile;
 
   function setUp() {
+    parent::setUp();
+
     $this->pluginFile = getcwd() . '/wp-scroll-up.php';
     $this->plugin = new Plugin($this->pluginFile);
   }
@@ -71,6 +73,76 @@ class PluginTest extends \PHPUnit_Framework_TestCase {
     $this->plugin->enable();
 
     $this->assertEquals(getcwd(), $helper->getBaseDir());
+  }
+
+  function test_it_contains_script_loader() {
+    $loader = $this->plugin->lookup('scriptLoader');
+    $this->assertInstanceOf('WpScrollUp\\ScriptLoader', $loader);
+  }
+
+  function test_it_contains_stylesheet_loader() {
+    $loader = $this->plugin->lookup('stylesheetLoader');
+    $this->assertInstanceOf('WpScrollUp\\StylesheetLoader', $loader);
+  }
+
+  function test_it_contains_option_page() {
+    $page = $this->plugin->lookup('optionPage');
+    $this->assertInstanceOf('WpScrollUp\\OptionPage', $page);
+  }
+
+  function test_it_can_get_dir_for_plugin_file() {
+    $file = getcwd() . '/wp-scroll-up.php';
+    $dir = $this->plugin->toPluginDir($file);
+    $dirname = basename(getcwd());
+    $this->assertStringEndsWith($dirname, $dir);
+  }
+
+  function test_it_can_initialize_option_store() {
+    $this->plugin->enable();
+    $this->plugin->initOptionStore();
+    // todo how to test if setting was registered?
+  }
+
+  function test_it_has_default_options() {
+    $actual = $this->plugin->getDefaultOptions();
+    $this->assertEquals('fade', $actual['animation']);
+  }
+
+  function test_it_can_build_theme_stylesheet() {
+    $optionStore = $this->plugin->lookup('optionStore');
+    $optionStore->load();
+    $optionStore->setOption('style', 'foo');
+    $actual = $this->plugin->getThemeStylesheet();
+
+    $this->assertEquals('jquery-scroll-up-foo', $actual);
+  }
+
+  function test_it_can_build_custom_theme_stylesheet() {
+    $optionStore = $this->plugin->lookup('optionStore');
+    $optionStore->load();
+    $optionStore->setOption('style', 'custom');
+    $actual = $this->plugin->getThemeStylesheet();
+
+    $this->assertEquals('theme-custom', $actual);
+  }
+
+  function test_it_can_fetch_scroll_up_options() {
+    $optionStore = $this->plugin->lookup('optionStore');
+    $optionStore->defaultOptions = $this->plugin->getDefaultOptions();
+    $optionStore->load();
+    $actual = $this->plugin->getScrollUpOptions('foo');
+
+    $this->assertEquals('Scroll To Top', $actual['scrollText']);
+  }
+
+  function test_it_does_not_add_scroll_text_for_image_style() {
+    $optionStore = $this->plugin->lookup('optionStore');
+    $optionStore->defaultOptions = $this->plugin->getDefaultOptions();
+    $optionStore->load();
+    $optionStore->setOption('style', 'image');
+    $actual = $this->plugin->getScrollUpOptions('foo');
+
+    $this->assertEquals('', $actual['scrollText']);
   }
 
 }

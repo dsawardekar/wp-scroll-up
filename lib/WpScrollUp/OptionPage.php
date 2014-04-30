@@ -43,7 +43,7 @@ class OptionPage {
     $context = array(
       'settings_fields' => $this->getSettingsFields($this->pluginSlug),
       'animationTypes' => array('fade', 'none'),
-      'styleTypes' => array('tab', 'pill', 'link', 'image')
+      'styleTypes' => array('tab', 'pill', 'link', 'image', 'custom')
     );
 
     $options = $this->optionStore->getOptions();
