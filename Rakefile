@@ -38,7 +38,11 @@ end
 desc 'Create a new Distribution'
 task :dist => [
   'composer:update',
-  'bower:update',
   'git:ignore',
   'git:vendor'
+]
+
+desc 'Initialize - after distribution'
+task :init => [
+  'composer:update'
 ]
