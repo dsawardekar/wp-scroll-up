@@ -104,6 +104,12 @@ class OptionStore {
     /* prevents double sanitization */
     if ($this->isSanitized($options)) {
       return $options;
+    } elseif ($this->canRestoreDefaults($options)) {
+      $options = $this->getDefaultOptions();
+    }
+
+    if (array_key_exists('restoreDefaults', $options)) {
+      unset($options['restoreDefaults']);
     }
 
     $target    = $this->getOptions();
@@ -122,6 +128,11 @@ class OptionStore {
   }
 
   /* Helpers */
+  function canRestoreDefaults($options) {
+    return array_key_exists('restoreDefaults', $options) &&
+     $options['restoreDefaults'] == '1';
+  }
+
   function isSanitized($options) {
     return is_string($options) && $this->didSanitize;
   }

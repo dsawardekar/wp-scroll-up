@@ -37,6 +37,7 @@ class Plugin {
     $container->factory('stylesheet', 'WpScrollUp\\Stylesheet');
     $container->singleton('scriptLoader', 'WpScrollUp\\ScriptLoader');
     $container->singleton('stylesheetLoader', 'WpScrollUp\\StylesheetLoader');
+    $container->singleton('adminScriptLoader', 'WpScrollUp\\AdminScriptLoader');
 
     // twig
     $container->singleton('twigHelper', 'WordPress\\TwigHelper');
@@ -58,7 +59,7 @@ class Plugin {
     $twigHelper->setBaseDir($this->lookup('pluginDir'));
 
     add_action('admin_init', array($this, 'initOptionStore'));
-    add_action('admin_menu', array($this, 'initOptionPage'));
+    add_action('admin_menu', array($this, 'initAdmin'));
     add_action('init', array($this, 'initPlugin'));
   }
 
@@ -70,8 +71,9 @@ class Plugin {
     $this->lookup('optionStore')->register();
   }
 
-  function initOptionPage() {
+  function initAdmin() {
     $this->lookup('optionPage')->register();
+    $this->initAdminScripts();
   }
 
   function initPlugin() {
@@ -93,6 +95,18 @@ class Plugin {
     $loader->dependency('jquery-scroll-up-run', array('jquery', 'jquery-scroll-up'));
 
     $loader->localize('jquery-scroll-up', array($this, 'getScrollUpOptions'));
+    $loader->load();
+  }
+
+  function initAdminScripts() {
+    $options = array(
+      'version' => Version::$version,
+      'in_footer' => true
+    );
+
+    $loader = $this->lookup('adminScriptLoader');
+    $loader->schedule('wp-scroll-up-options', $options);
+    $loader->dependency('wp-scroll-up-options', array('jquery'));
     $loader->load();
   }
 
