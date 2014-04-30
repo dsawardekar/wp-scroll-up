@@ -29,7 +29,6 @@ namespace :git do
 
   task :clear_after do
     sh 'git rm -r lib/templates' if File.directory?('lib/templates')
-    sh 'git rm .gitignore'
     sh 'git commit -m "Cleaning up after dist"'
   end
 
