@@ -16,6 +16,7 @@ class ScriptLoaderTest extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container->factory('script', 'WpScrollUp\\Script');
     $this->container->object('pluginFile', getcwd() .  "/wp-scroll-up.php");
+    $this->container->object('pluginSlug', 'wp_scroll_up');
     $this->container->singleton('loader', 'WpScrollUp\\ScriptLoader');
 
     $this->loader = $this->container->lookup('loader');

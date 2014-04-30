@@ -16,6 +16,7 @@ class StylesheetLoaderTest extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container->factory('stylesheet', 'WpScrollUp\\Stylesheet');
     $this->container->object('pluginFile', getcwd() .  "/wp-scroll-up.php");
+    $this->container->object('pluginSlug', 'wp_scroll_up');
     $this->container->singleton('loader', 'WpScrollUp\\StylesheetLoader');
 
     $this->loader = $this->container->lookup('loader');

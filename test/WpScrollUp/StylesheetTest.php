@@ -14,6 +14,7 @@ class StylesheetText extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container->singleton('stylesheet', 'WpScrollUp\\Stylesheet');
     $this->container->object('pluginFile', getcwd() .  '/wp-scroll-up.php');
+    $this->container->object('pluginSlug', 'wp_scroll_up');
 
     $this->stylesheet = $this->container->lookup('stylesheet');
   }

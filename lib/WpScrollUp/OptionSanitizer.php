@@ -124,7 +124,7 @@ class OptionSanitizer {
   }
 
   function getStyles() {
-    return array('tab', 'pill', 'link', 'image');
+    return array('tab', 'pill', 'link', 'image', 'custom');
   }
 
 }

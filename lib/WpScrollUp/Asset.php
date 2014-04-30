@@ -12,7 +12,7 @@ class Asset {
 
   /* abstract */
   public function needs() {
-    return array('pluginFile');
+    return array('pluginFile', 'pluginSlug');
   }
 
   public function dirname() {
@@ -58,7 +58,33 @@ class Asset {
   }
 
   function path() {
-    return plugins_url($this->relpath(), $this->pluginFile);
+    if ($this->isCustomSlug()) {
+      return $this->customPath();
+    } else {
+      return plugins_url($this->relpath(), $this->pluginFile);
+    }
+  }
+
+  function isCustomSlug() {
+    return preg_match('/^theme-/', $this->slug) === 1;
+  }
+
+  function underscorize($value) {
+    return str_replace('_', '-', $value);
+  }
+
+  function customPath() {
+    $slug = preg_replace('/^theme-/', '', $this->slug);
+    $themeUrl = get_stylesheet_directory_uri();
+
+    $path  = $themeUrl;
+    $path .= '/';
+    $path .= $this->underscorize($this->pluginSlug);
+    $path .= '/';
+    $path .= $slug;
+    $path .= $this->extension();
+
+    return $path;
   }
 
 }

@@ -7,7 +7,6 @@ use WordPress\TwigHelper;
 
 class Plugin {
 
-  static $version = '0.1.0';
   static $instance = null;
   static function create($file) {
     if (is_null(self::$instance)) {
@@ -22,23 +21,27 @@ class Plugin {
   }
 
   public $container;
-  public $initedOptionStore;
 
   function __construct($file) {
     $container = new Container();
+
+    // plugin paths & defaults
     $container->object('pluginFile', $file);
     $container->object('pluginDir', $this->toPluginDir($file));
     $container->object('pluginSlug', 'wp_scroll_up');
+    $container->object('optionName', 'wp_scroll_up_options');
+    $container->object('defaultOptions', $this->getDefaultOptions());
 
+    // asset loader
     $container->factory('script', 'WpScrollUp\\Script');
     $container->factory('stylesheet', 'WpScrollUp\\Stylesheet');
     $container->singleton('scriptLoader', 'WpScrollUp\\ScriptLoader');
     $container->singleton('stylesheetLoader', 'WpScrollUp\\StylesheetLoader');
 
+    // twig
     $container->singleton('twigHelper', 'WordPress\\TwigHelper');
 
-    $container->object('optionName', 'wp_scroll_up_options');
-    $container->object('defaultOptions', $this->getDefaultOptions());
+    // plugin options
     $container->singleton('optionStore', 'WpScrollUp\\OptionStore');
     $container->singleton('optionSanitizer', 'WpScrollUp\\OptionSanitizer');
     $container->singleton('optionPage', 'WpScrollUp\\OptionPage');
@@ -63,25 +66,8 @@ class Plugin {
     return untrailingslashit(plugin_dir_path($file));
   }
 
-  function configureOptionStore() {
-    if ($this->initedOptionStore === true) {
-      return;
-    }
-
-    $optionStore = $this->lookup('optionStore');
-    $optionStore->setDefaults($this->getDefaultOptions());
-    $optionStore->setPluginSlug($this->lookup('pluginSlug'));
-    $optionStore->setOptionName($this->lookup('pluginSlug') .  '_options');
-    $optionStore->setSanitizer($this->lookup('optionSanitizer'));
-
-    $this->initedOptionStore = true;
-  }
-
   function initOptionStore() {
-    $this->configureOptionStore();
-
-    $optionStore = $this->lookup('optionStore');
-    $optionStore->register();
+    $this->lookup('optionStore')->register();
   }
 
   function initOptionPage() {
@@ -95,7 +81,7 @@ class Plugin {
 
   function initFrontEndScripts() {
     $options = array(
-      'version' => Plugin::$version,
+      'version' => Version::$version,
       'in_footer' => true
     );
 
@@ -112,7 +98,7 @@ class Plugin {
 
   function initFrontEndStyles() {
     $options = array(
-      'version' => Plugin::$version,
+      'version' => Version::$version,
       'media' => 'all'
     );
 
@@ -122,10 +108,14 @@ class Plugin {
   }
 
   function getThemeStylesheet() {
-    $this->configureOptionStore();
     $optionStore = $this->lookup('optionStore');
+    $style = $optionStore->getOption('style');
 
-    return 'jquery-scroll-up-' .  $optionStore->getOption('style');
+    if ($style !== 'custom') {
+      return 'jquery-scroll-up-' . $style;
+    } else {
+      return 'theme-custom';
+    }
   }
 
   function getDefaultOptions() {
@@ -141,9 +131,13 @@ class Plugin {
   }
 
   function getScrollUpOptions($script) {
-    $this->configureOptionStore();
-    $optionStore = $this->lookup('optionStore');
-    return $optionStore->getOptions();
+    $options = $this->lookup('optionStore')->getOptions();
+
+    if ($options['style'] == 'image') {
+      $options['scrollText'] = '';
+    }
+
+    return $options;
   }
 
 }

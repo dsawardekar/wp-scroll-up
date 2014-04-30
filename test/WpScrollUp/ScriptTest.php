@@ -15,6 +15,7 @@ class ScriptTest extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container->singleton('script', 'WpScrollUp\\Script');
     $this->container->object('pluginFile', getcwd() .  '/wp-scroll-up.php');
+    $this->container->object('pluginSlug', 'wp_scroll_up');
 
     $this->script = $this->container->lookup('script');
   }

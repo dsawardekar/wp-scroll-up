@@ -15,6 +15,7 @@ class AssetTest extends \WP_UnitTestCase {
     $this->container = new Container();
     $this->container->singleton('asset', 'WpScrollUp\\Asset');
     $this->container->object('pluginFile', getcwd() .  '/wp-scroll-up.php');
+    $this->container->object('pluginSlug', 'wp_scroll_up');
 
     $this->asset = $this->container->lookup('asset');
   }
@@ -59,6 +60,22 @@ class AssetTest extends \WP_UnitTestCase {
 
   function onLocalize($asset) {
     return array('foo' => 'bar');
+  }
+
+  function test_it_can_detect_a_custom_slug() {
+    $this->asset->slug = 'theme-custom';
+    $this->assertTrue($this->asset->isCustomSlug());
+  }
+
+  function test_it_can_detect_normal_slug() {
+    $this->asset->slug = 'wp-scroll-up-foo';
+    $this->assertFalse($this->asset->isCustomSlug());
+  }
+
+  function test_it_can_build_custom_path() {
+    $this->asset->slug = 'theme-foo';
+    $expected = 'wp-scroll-up/foo.js';
+    $this->assertStringEndsWith($expected, $this->asset->customPath());
   }
 
 }
