@@ -12,9 +12,10 @@ namespace :git do
   end
 
   task :clean do
-    sh 'rm -rf tmp' if File.directory?('tmp')
+    sh 'rm -rf tmp'              if File.directory?('tmp')
     sh 'rm -rf bower_components' if File.directory?('bower_components')
-    sh 'rm -rf vendor' if File.directory?('vendor')
+    sh 'rm -rf vendor'           if File.directory?('vendor')
+    sh 'rm wp-cli.local.yml'     if File.exists?('wp-cli.local.yml')
 
     sh 'git rm *.json'
     sh 'git rm *.lock'
