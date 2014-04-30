@@ -12,6 +12,10 @@ namespace :git do
   end
 
   task :clean do
+    sh 'rm -rf tmp' if File.directory?('tmp')
+    sh 'rm -rf bower_components' if File.directory?('bower_components')
+    sh 'rm -rf vendor' if File.directory?('vendor')
+
     sh 'git rm *.json'
     sh 'git rm *.lock'
     sh 'git rm -r test'
@@ -49,13 +53,14 @@ end
 
 desc 'Create a new Distribution'
 task :dist => [
-  'composer:update',
   'git:clean',
   'git:ignore',
+  'composer:update',
   'git:vendor'
 ]
 
 desc 'Initialize - after distribution'
 task :init => [
-  'composer:update'
+  'composer:update',
+  'bower:update'
 ]
