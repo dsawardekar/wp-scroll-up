@@ -51,6 +51,17 @@ namespace :composer do
   task :update do
     sh 'rm -rf vendor' if File.directory?('vendor')
     sh 'composer update'
+
+    changed = sh 'git status | grep "working directory clean"'
+    if changed != ''
+      sh 'git add composer.json composer.lock'
+      sh 'git commit -m "Fresh composer update"'
+    end
+  end
+
+  task :foo do
+    changed = sh 'git status'
+    puts "changed='#{changed}'"
   end
 end
 
