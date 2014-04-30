@@ -59,13 +59,4 @@ class OptionPage {
     settings_fields($slug);
     return ob_get_clean();
   }
-
-  function dump($key, $value) {
-    ob_start();
-    var_dump($value);
-    $dumped = ob_get_clean();
-
-    error_log("$key: $dumped");
-  }
-
 }

@@ -134,7 +134,7 @@ class Plugin {
 
   function getDefaultOptions() {
     return array(
-      'style'          => 'tab',
+      'style'          => 'image',
       'scrollText'     => 'Scroll To Top',
       'scrollDistance' => 300,
       'scrollSpeed'    => 300,
