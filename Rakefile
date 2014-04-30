@@ -23,9 +23,12 @@ namespace :git do
     sh 'git rm phpunit.xml'
     sh 'git rm Gemfile'
     sh 'git rm Rakefile'
-    sh 'git rm -r lib/templates' if File.directory?('lib/templates')
 
     sh 'git commit -m "Removes development files"'
+  end
+
+  task :clear_after do
+    sh 'git rm lib/templates' if File.directory?('lib/templates')
   end
 
   # todo: conditionally add js libs
@@ -65,7 +68,8 @@ task :dist => [
   'composer:update',
   'git:clean',
   'git:ignore',
-  'git:vendor'
+  'git:vendor',
+  'git:clear_after'
 ]
 
 desc 'Initialize - after distribution'
