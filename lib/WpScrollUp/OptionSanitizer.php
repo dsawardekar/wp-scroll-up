@@ -19,7 +19,7 @@ class OptionSanitizer {
         if ($result === false) {
           $this->addError($key, $value);
         } else {
-          $target[$key] = $value;
+          $target[$key] = $result;
         }
       } else {
         /* without validator assumed to be invalid */
@@ -38,6 +38,14 @@ class OptionSanitizer {
     return $this->errors;
   }
 
+  function validateStyle($value) {
+    return $this->validateChoice($value, $this->getStyles());
+  }
+
+  function validateScrollText($value) {
+    return $this->validateText($value);
+  }
+
   function validateScrollDistance($value) {
     return $this->validateNumber($value);
   }
@@ -50,28 +58,8 @@ class OptionSanitizer {
     return $this->validateChoice($value, $this->getAnimationTypes());
   }
 
-  function validateAnimationSpeed($value) {
-    return $this->validateNumber($value);
-  }
-
-  function validateScrollText($value) {
-    return $this->validateText($value);
-  }
-
-  function validateScrollImage($value) {
-    return $value;
-  }
-
-  function validateStyle($value) {
-    return $this->validateChoice($value, $this->getStyles());
-  }
-
   function validateText($value) {
-    if ($value !== '') {
-      return $value;
-    } else {
-      return false;
-    }
+    return sanitize_text_field($value);
   }
 
   function validateNumber($value) {
@@ -95,23 +83,23 @@ class OptionSanitizer {
     array_push($this->errors, $error);
   }
 
-  function toNumber($value, $default = 100) {
+  function toNumber($value) {
     if ($this->isNumber($value)) {
       return intval($value);
     } else {
-      return $default;
+      return false;
     }
   }
 
   function isNumber($value) {
-    return intval($value) > 0;
+    return is_numeric($value);
   }
 
   function toChoiceType($value, $defaults) {
     if ($this->isChoiceType($value, $defaults)) {
       return $value;
     } else {
-      return 'none';
+      return false;
     }
   }
 
