@@ -14,9 +14,8 @@ namespace :git do
   task :clean do
     sh 'git rm *.json'
     sh 'git rm *.lock'
-    sh 'git rm *.yml'
-    sh 'git rm test'
-    sh 'git rm bin'
+    sh 'git rm -r test'
+    sh 'git rm -r bin'
     sh 'git rm phpunit.xml'
     sh 'git rm Gemfile'
     sh 'git rm Rakefile'
