@@ -49,6 +49,7 @@ end
 namespace :composer do
   desc "Update Composer dependencies"
   task :update do
+    sh 'rm -rf vendor' if File.directory?('vendor')
     sh 'composer update'
   end
 end
