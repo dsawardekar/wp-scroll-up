@@ -65,6 +65,10 @@ Other settings that can be changed,
 
 == Changelog ==
 
+= 0.1.1 =
+
+* Adds readme.
+
 = 0.1.0 =
 
 * Initial Release
