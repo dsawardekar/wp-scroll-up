@@ -4,6 +4,6 @@ namespace WpScrollUp;
 
 class Version {
 
-  static $version = '0.1.3';
+  static $version = '0.1.4';
 
 }

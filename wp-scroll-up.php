@@ -2,7 +2,7 @@
 /*
 Plugin Name: wp-scroll-up
 Description: WordPress Integration with the scrollUp jQuery Plugin.
-Version: 0.1.3
+Version: 0.1.4
 Author: Darshan Sawardekar
 Author URI: http://pressing-matters.io/
 Plugin URI: http://wordpress.org/plugins/wp-scroll-up
