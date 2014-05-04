@@ -4,7 +4,7 @@ Donate link: http://pressing-matters.io/
 Tags: back to top, scroll up, scroll to top
 Requires at least: 3.5.0
 Tested up to: 3.9
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ styles or by adding a custom CSS file in your Theme.
 1. Click Plugins > Add New in the WordPress admin panel.
 1. Search for "wp-scroll-up" and install.
 
-= Customization =
+### Customization ###
 
 The *Style* dropdown changes the button style displayed. These
 correspond to CSS styles present in the plugin's CSS directory.
