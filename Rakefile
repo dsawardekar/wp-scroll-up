@@ -1,4 +1,4 @@
-plugin_slug = "whats-my-ip"
+plugin_slug = "wp-scroll-up"
 version     = ENV['VERSION']
 destination = "tmp/dist/#{version}"
 
