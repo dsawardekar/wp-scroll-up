@@ -21,7 +21,7 @@ styles or by adding a custom CSS file in your Theme.
 1. Click Plugins > Add New in the WordPress admin panel.
 1. Search for "wp-scroll-up" and install.
 
-= Customization =
+### Customization ###
 
 The *Style* dropdown changes the button style displayed. These
 correspond to CSS styles present in the plugin's CSS directory.
