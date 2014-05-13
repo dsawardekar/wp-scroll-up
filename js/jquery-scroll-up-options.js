@@ -7,7 +7,7 @@
   };
 
   var getScrollUpOptions = function() {
-    var options = jquery_scroll_up;
+    var options = jquery_scroll_up_options;
     toInteger('scrollDistance', options);
     toInteger('scrollSpeed', options);
 
