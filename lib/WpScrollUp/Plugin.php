@@ -59,10 +59,17 @@ class Plugin {
 
   function initFrontEndScripts() {
     $loader = $this->lookup('scriptLoader');
-    $loader->schedule('jquery-scroll-up', array('jquery'));
-    $loader->schedule('jquery-scroll-up-options', array('jquery-scroll-up'));
+    $loader->schedule(
+      'jquery-scroll-up', array('dependencies' => array('jquery'))
+    );
 
-    $loader->localize('jquery-scroll-up-options', array($this, 'getScrollUpOptions'));
+    $loader->schedule(
+      'jquery-scroll-up-options', array(
+        'dependencies' => 'jquery-scroll-up',
+        'localizer' => array($this, 'getScrollUpOptions')
+      )
+    );
+
     $loader->load();
   }
 
