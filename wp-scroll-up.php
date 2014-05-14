@@ -26,7 +26,7 @@ function wp_scroll_up_register() {
   require_once(__DIR__ . '/vendor/dsawardekar/arrow/lib/Arrow/ArrowPluginLoader.php');
 
   $loader = ArrowPluginLoader::getInstance();
-  $loader->register('wp-scroll-up', '0.3.0', 'wp_scroll_up_load');
+  $loader->register('wp-scroll-up', '0.4.0', 'wp_scroll_up_load');
 }
 
 function wp_scroll_up_load() {
