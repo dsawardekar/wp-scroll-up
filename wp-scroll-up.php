@@ -26,12 +26,10 @@ function wp_scroll_up_register() {
   require_once(__DIR__ . '/vendor/dsawardekar/arrow/lib/Arrow/ArrowPluginLoader.php');
 
   $loader = ArrowPluginLoader::getInstance();
-  $loader->register('wp-scroll-up', '0.4.0', 'wp_scroll_up_load');
+  $loader->register(__FILE__, '0.5.1', 'wp_scroll_up_load');
 }
 
 function wp_scroll_up_load() {
-  require_once(__DIR__ . '/vendor/autoload.php');
-
   $plugin = \WpScrollUp\Plugin::create(__FILE__);
   $plugin->enable();
 }
