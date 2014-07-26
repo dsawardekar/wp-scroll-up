@@ -26,4 +26,18 @@ class PluginMeta extends \Arrow\PluginMeta {
     return array('fade', 'none');
   }
 
+  function getOptionsContext() {
+    $optionsStore = $this->lookup('optionsStore');
+    return $optionsStore->getOptions();
+  }
+
+  function getLocalizedStrings() {
+    $strings = array(
+      'styleTypes'     => $this->getStyleTypes(),
+      'animationTypes' => $this->getAnimationTypes()
+    );
+
+    return $strings;
+  }
+
 }
