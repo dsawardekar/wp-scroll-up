@@ -1,4 +1,3 @@
-console.log('wp-scroll-up-options.js');
 (function($) {
 
   var getScrollUpOptions = function() {
